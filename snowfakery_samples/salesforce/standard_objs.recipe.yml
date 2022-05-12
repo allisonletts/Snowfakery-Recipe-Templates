@@ -1,5 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SFDO-Tooling/Snowfakery/main/schema/snowfakery_recipe.jsonschema.json
+- object: Campaign
+  count: 10
+  fields:
+    Name:
+      fake: catchphrase
+    StartDate:
+      date_between:
+            start_date: 2021-01-01
+            end_date: 2023-12-31
+    EndDate:
+       date(StartDate)) + relativedelta(months=9)
+    IsActive: true
+    NumberSent:
+      random_number:
+        - 25
+        - 1000
 - object: Account
-  count: 25
+  count: 10
   fields:
     Name:
       fake: company
@@ -109,8 +126,8 @@
     - object: Contact
       count:
         random_number:
-          min: 1
-          max: 20
+          min: 25
+          max: 70
       fields:
         AccountId:
           reference: Account # you need to have defined an Account elsewhere
@@ -125,15 +142,70 @@
             - Dr.
             - Prof.
             - null
+      friends:
+            - object: Case
+              count:
+                random_choice:
+                  - 0
+                  - 0
+                  - 1
+                  - 1
+                  - 1
+              fields:
+                AccountId:
+                  reference: Account
+                ContactId:
+                  reference: Contact
+                Description:           
+                  fake.text:
+                    max_nb_chars: 100
+                Origin:
+                  random_choice:
+                    - Email
+                    - Phone
+                    - Web
+                Priority:
+                  random_choice:
+                    - High
+                    - Medium
+                    - Low
+                Status:
+                  random_choice:
+                    - New
+                    - Closed
+                    - Escalated
+                Subject:
+                  fake.text:
+                    max_nb_chars: 100
+                SuppliedCompany: fake.Company
+                SuppliedEmail: fake.email
+                SuppliedName: fake.name
+                SuppliedPhone: fake.phone
+                Type:
+                  random_choice:
+                    - Feature Request
+                    - Question
+            - object: CampaignMember
+              fields:
+                Status:
+                  random_choice:
+                    - Sent
+                    - Sent
+                    - Responded
+                ContactId:
+                  reference:
+                    Contact
+
     - object: Opportunity
       count:
         random_number:
-          min: 1
-          max: 5
+          min: 25
+          max: 35
       fields:
         AccountId:
           reference: Account # you need to have declared an account elsewhere
-
+        CampaignId:
+          random_reference: Campaign
         CloseDate:
           date_between:
             start_date: -1y
@@ -160,3 +232,5 @@
             max: 100000
             step: 100
         Name: ${{Account.Name}} $${{Amount}} Opportunity
+
+
